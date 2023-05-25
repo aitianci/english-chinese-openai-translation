@@ -127,7 +127,10 @@ def process_data(h2_prod_limits, h2_cons_limits, df, gains_df):
     electricity_gain = (df['H2 consumption'].sum() * 14.2 / 10.3) + df['RealDischarge'].sum()
 
     #add self sufficient rate
-    self_sufficient_rate = ((df['H2 consumption'].sum() * 14.2 / 10.3) + df['RealDischarge'].sum())/((df['grid2'].sum()*0.25)+(df['H2 consumption'].sum() * 14.2 / 10.3) + df['RealDischarge'].sum())
+    self_sufficient_rate = ((df['H2 consumption'].sum() * 14.2 / 10.3) + df['RealDischarge'].sum())/((df['Grid kW 2'].sum()*0.25)+(df['H2 consumption'].sum() * 14.2 / 10.3) + df['RealDischarge'].sum())
+
+    #add h2_prod sum
+    sum_h2_prod = df['H2 consumption'].sum()
     
     # Append the results to the gains DataFrame
     gains_df.loc[len(gains_df)] = [h2_prod_upper_limit, h2_cons_upper_limit, electricity_gain]
@@ -137,7 +140,7 @@ def process_data(h2_prod_limits, h2_cons_limits, df, gains_df):
 
 
 # Create a DataFrame to store the electricity gains and corresponding h2_prod and h2_cons values
-gains_df = pd.DataFrame(columns=['h2_prod', 'h2_cons', 'electricity_gain', 'self_sufficient_rate')
+gains_df = pd.DataFrame(columns=['h2_prod', 'h2_cons', 'electricity_gain', 'self_sufficient_rate' ,'sum_h2_prod'] )
 
 # Iterate over the specified h2_prod and h2_cons ranges and calculate electricity gains
 for h2_prod_upper_limit in [x * 0.25 for x in range(1, 11)]:
@@ -154,4 +157,4 @@ for h2_prod_upper_limit in [x * 0.25 for x in range(1, 11)]:
                      (h2_cons_upper_limit, h2_cons_lower_limit), df, gains_df)
 
 # Save the electricity gains DataFrame to an Excel file
-gains_df.to_excel('electricity_gains.xlsx', index=False)
+gains_df.to_excel('electricity_gains_prod.xlsx', index=False)
